@@ -1,0 +1,18 @@
+{
+  "name": "kickoff-color-picker-client",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Connor Stauffer <connor.paul.stauffer@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "next"
+  },
+  "dependencies": {
+    "@zeit/next-sass": "^1.0.1",
+    "axios": "^0.19.0",
+    "next": "^9.0.2",
+    "node-sass": "^4.12.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  }
+}
