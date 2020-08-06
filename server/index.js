@@ -16,10 +16,10 @@ app.get("/greeting", async (_, res) => {
 
   res.send(JSON.stringify(greeting));
 });
-app.get("/palettes", async (_, res) => {
-  const [palettes] = await knex("palettes");
+app.get("/colors", async (_, res) => {
+  const [colors] = await knex("colors");
 
-  res.send(JSON.stringify(palettes));
+  res.send(JSON.stringify(colors));
 });
 
 
