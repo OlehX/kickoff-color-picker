@@ -1,4 +1,4 @@
-//import Palette from "../components/palette";
+import Palette from "../palette";
 import "./index.scss";
 
 class Picker extends React.Component {
@@ -8,6 +8,7 @@ class Picker extends React.Component {
             red: 0,
             blue: 0,
             green: 0,
+            color: null
         }
 
         this.changeRed = this.changeRed.bind(this);
@@ -30,38 +31,45 @@ class Picker extends React.Component {
 
         this.setState({ blue: event.target.value });
     }
+
     addColor() {
-        event.preventDefault();
-    }
+        const color = {
+            red: this.state.red,
+            green: this.state.green,
+            blue: this.state.blue
+        };
+        this.setState({ color });
+    };
+
 
     render() {
         return (
             <div className="picker">
                 <div className="row">
                     <div className="picker__color col-6 col-xs-12">
-                        <form onSubmit={this.addColor}>
-                            <div className="row">
-                                <div className="col-4">
-                                    <label>
-                                        Red: <input type="number" value={this.state.red} min="0" max="255" onChange={this.changeRed} />
-                                    </label>
-                                </div>
-                                <div className="col-4">
-                                    <label>
-                                        Green: <input type="number" value={this.state.green} min="0" max="255" onChange={this.changeGreen} />
-                                    </label>
-                                </div>
-                                <div className="col-4">
-                                    <label>
-                                        Blue: <input type="number" value={this.state.blue} min="0" max="255" onChange={this.changeBlue} />
-                                    </label>
-                                </div>
+                        <div className="row">
+                            <div className="col-4">
+                                <label>
+                                    Red: <input type="number" value={this.state.red} min="0" max="255" onChange={this.changeRed} />
+                                </label>
                             </div>
-                            <div className="picker__circle-bg" style={{ backgroundColor: `rgb(${this.state.red},${this.state.green},${this.state.blue})` }}>  <input type="submit" value="Add ->" /></div>
+                            <div className="col-4">
+                                <label>
+                                    Green: <input type="number" value={this.state.green} min="0" max="255" onChange={this.changeGreen} />
+                                </label>
+                            </div>
+                            <div className="col-4">
+                                <label>
+                                    Blue: <input type="number" value={this.state.blue} min="0" max="255" onChange={this.changeBlue} />
+                                </label>
+                            </div>
+                        </div>
+                        <div className="picker__circle-bg" style={{ backgroundColor: `rgb(${this.state.red},${this.state.green},${this.state.blue})` }}>
+                            <button onClick={this.addColor}>Add -&gt;</button>
+                        </div>
 
-                        </form>
                     </div>
-                    {/* <div className="col-6"><Palette /></div> */}
+                    <div className="col-6"><Palette addColor={this.state.color} /></div>
                 </div>
             </div>
         );
