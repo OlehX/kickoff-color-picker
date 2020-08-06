@@ -1,19 +1,44 @@
-import "./index.scss";
-import axios from "axios";
 
+import axios from "axios";
+import { useState, useEffect } from "react";
 import { SERVER_URL } from "../../constants";
+import "./index.scss";
 
 class Palette extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {
-            colors: []
+            colors: [],
+            palette: []
         }
 
-    }
-    componentDidMount() {
+
+    };
+
+
+    async componentDidMount() {
+        await axios.get(`${SERVER_URL}/colors`).then(res => {
+            if (res.status === 200) {
+
+                const palette = res.data.map(color =>
+                    (
+                        {
+                            red: color.red,
+                            blue: color.blue,
+                            green: color.green
+                        }
+
+                    ));
+                this.setState({ ...this.state, palette: palette })
+            }
+            else {
+                throw new Error("Error connecting to server");
+            }
+        });
 
     }
+
     componentDidUpdate(prevProps) {
 
         if (!this.props.addColor)
@@ -46,6 +71,14 @@ class Palette extends React.Component {
             </div>
 
         ));
+        const givenPalette =
+            this.state.palette.map((color, index) => (
+                <div key={index} className="col-palette">
+                    <div className="color" style={{ backgroundColor: `rgb(${color.red},${color.green},${color.blue})` }}>
+                    </div>
+                </div>
+
+            ));
 
         return (
             <div className="palettes">
@@ -57,7 +90,7 @@ class Palette extends React.Component {
 
                 <div className="row">
                     <h2> Saved palettes</h2>
-                    {/* {palettes || "Loading..."} */}
+                    {givenPalette}
                 </div>
             </div>
 
