@@ -16,6 +16,12 @@ app.get("/greeting", async (_, res) => {
 
   res.send(JSON.stringify(greeting));
 });
+app.get("/palettes", async (_, res) => {
+  const [palettes] = await knex("palettes");
+
+  res.send(JSON.stringify(palettes));
+});
+
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

@@ -1,4 +1,7 @@
 import "./index.scss";
+import axios from "axios";
+
+import { SERVER_URL } from "../../constants";
 
 class Palette extends React.Component {
     constructor(props) {
@@ -8,7 +11,9 @@ class Palette extends React.Component {
         }
 
     }
+    componentDidMount() {
 
+    }
     componentDidUpdate(prevProps) {
 
         if (!this.props.addColor)
@@ -43,9 +48,19 @@ class Palette extends React.Component {
         ));
 
         return (
-            <div className="row">
-                {userPalette}
+            <div className="palettes">
+                <div className="row">
+                    {userPalette}
+
+                </div>
+                <button onClick={this.addColor}>Add Palette</button>
+
+                <div className="row">
+                    <h2> Saved palettes</h2>
+                    {/* {palettes || "Loading..."} */}
+                </div>
             </div>
+
         );
     }
 
