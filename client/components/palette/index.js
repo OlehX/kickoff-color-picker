@@ -86,10 +86,10 @@ class Palette extends React.Component {
                     {userPalette}
 
                 </div>
-                <button onClick={this.addColor}>Add Palette</button>
+                {/* <button onClick={this.addColor}>Add Palette</button> */}
 
+                <h2> Saved palettes</h2>
                 <div className="row">
-                    <h2> Saved palettes</h2>
                     {givenPalette}
                 </div>
             </div>
