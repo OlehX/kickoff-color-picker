@@ -48,8 +48,11 @@ class Palette extends React.Component {
 
                 colors.push(this.props.color);
             }
+            const isEdit = false;
+            const selectedColor = 0;
+            this.setState({ ...this.state, colors, isEdit, selectedColor });
 
-            this.setState({ ...this.state, colors, isEdit: false });
+            this.props.onEditColor({ selectedColor, isEdit, color: this.props.color });
         }
     }
     async loadPalettes() {

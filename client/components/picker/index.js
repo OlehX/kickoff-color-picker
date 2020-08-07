@@ -40,6 +40,7 @@ class Picker extends React.Component {
             blue: this.state.blue
         };
         this.setState({ ...this.state, color });
+
     };
 
 
