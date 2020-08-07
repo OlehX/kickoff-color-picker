@@ -21,7 +21,7 @@ class Palette extends React.Component {
 
 
     async componentDidMount() {
-        await this.getPalettes();
+        await this.loadPalettes();
     }
 
     componentDidUpdate(prevProps) {
@@ -52,8 +52,7 @@ class Palette extends React.Component {
             this.setState({ ...this.state, colors, isEdit: false });
         }
     }
-
-    async getPalettes() {
+    async loadPalettes() {
         this.setState({ ...this.state, isLoading: true })
 
         await axios.get(`${SERVER_URL}/colors`).then(res => {
@@ -61,22 +60,23 @@ class Palette extends React.Component {
                 const numberPalettes = res.data.length / 5;
                 let palettes = [];
                 let palette = [];
-
+                console.log(res.data);
                 res.data.forEach((color, index) => {
                     palette.push({
+                        id: color.id,
                         red: color.red,
                         blue: color.blue,
                         green: color.green
                     })
 
-                    if (index % 5 === 4) {
+                    if (index % 5 === 4 || index === res.data.length - 1) {
 
                         palettes.push(palette);
                         palette = [];
                     }
 
                 });
-
+                console.log(palettes);
                 this.setState({ ...this.state, palettes: palettes, numberPalettes, isLoading: false })
             }
             else {
@@ -84,6 +84,7 @@ class Palette extends React.Component {
             }
         });
     }
+
 
     async addPalette() {
         const colors = this.state.colors;
@@ -96,7 +97,24 @@ class Palette extends React.Component {
                 console.log(error);
             });
 
-        this.getPalettes();
+        this.loadPalettes();
+    }
+
+    async deletePalette(item) {
+
+        const startIndex = item[0].id;
+        const endIndex = item[item.length - 1].id;
+        await axios.delete(`${SERVER_URL}/`, {
+            data: { startIndex, endIndex }
+        })
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        this.loadPalettes();
     }
 
     editColor(index) {
@@ -123,6 +141,7 @@ class Palette extends React.Component {
             this.state.palettes.map((item, index) => (
                 <React.Fragment key={index}>
                     <h2>Palette {index + 1}</h2>
+
                     <div className="row">
                         {item.map((color, index) => (
                             <div key={index} className="col-palette">
@@ -131,6 +150,8 @@ class Palette extends React.Component {
                             </div>
                         ))}
                     </div>
+                    {<button onClick={() => this.deletePalette(item)}>Delete</button>}
+
                 </React.Fragment>
             ));
 

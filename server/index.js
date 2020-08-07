@@ -23,11 +23,18 @@ app.get("/colors", async (_, res) => {
 });
 
 app.post("/", async (req, res) => {
-  for (i in req.body.colors) {
-    await knex("colors").insert(req.body.colors[i]).then(function (result) {
-      res.json({ success: true, message: 'ok' });
-    });
-  }
+  await knex("colors").insert(req.body.colors).then(function (result) {
+    res.json({ success: true, message: 'ok' });
+  });
+
+});
+
+app.delete("/", async (req, res) => {
+
+  await knex("colors").where('id', '>=', req.body.startIndex).andWhere('id', '<=', req.body.endIndex).del().then(function (result) {
+    res.json({ success: true, message: 'ok' });
+  });
+
 });
 
 app.listen(PORT, () => {
