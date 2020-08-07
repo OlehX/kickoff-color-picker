@@ -143,7 +143,7 @@ class Palette extends React.Component {
         const allPalettes =
             this.state.palettes.map((item, index) => (
                 <React.Fragment key={index}>
-                    <h2>Palette {index + 1}</h2>
+                    <h3>Palette {index + 1}</h3>
 
                     <div className="row">
                         {item.map((color, index) => (
