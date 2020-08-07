@@ -75,18 +75,17 @@ class Palette extends React.Component {
     }
 
     async addPalette() {
-        const colors = JSON.stringify(this.state.colors);
+        const colors = this.state.colors;
 
-        axios.post('/addPalette', {
-            colors
-        })
+        await axios.post(`${SERVER_URL}/`, { colors })
             .then(function (response) {
                 console.log(response);
-                this.getPalettes();
             })
             .catch(function (error) {
                 console.log(error);
             });
+
+        this.getPalettes();
     }
 
     editColor(index) {
@@ -122,7 +121,7 @@ class Palette extends React.Component {
                     {newPalette}
 
                 </div>
-                {<button onClick={this.addPalette} disabled={newPalette.length === 5 ? false : true}>Add Palette</button>}
+                {<button onClick={() => this.addPalette()} disabled={newPalette.length === 1 ? false : true}>Add Palette</button>}
 
                 <h2> Saved palettes</h2>
 

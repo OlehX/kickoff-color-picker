@@ -16,12 +16,23 @@ app.get("/greeting", async (_, res) => {
 
   res.send(JSON.stringify(greeting));
 });
+
 app.get("/colors", async (_, res) => {
   const colors = await knex("colors");
   res.send(JSON.stringify(colors));
 });
 
+app.post("/", async (req, res) => {
+  for (i in req.body.colors) {
+    await knex("colors").insert(req.body.colors[i]).then(function (result) {
+      res.json({ success: true, message: 'ok' });
+    });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
+
+
+
