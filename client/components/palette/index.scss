@@ -1,15 +1,27 @@
 .col-palette {
-    height: 2rem;
-    padding: 0.5rem;
+    padding: 0.5rem 0;
+
+    & + .col-palette {
+        padding-left: 1rem;
+    }
+
     .color {
         height: 2rem;
+        border: 1px solid #e2e2e2;
+    }
+    &.selected {
+        .color {
+            box-shadow: 0 0 0.5rem rgb(116, 129, 129);
+        }
     }
 }
 .palettes {
-    h2 {
-        margin-top: 2rem;
+    &__new {
+        height: 3rem;
     }
+
     button {
         display: block;
+        margin-bottom: 2rem;
     }
 }

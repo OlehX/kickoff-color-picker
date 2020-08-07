@@ -8,28 +8,29 @@ class Picker extends React.Component {
             red: 0,
             blue: 0,
             green: 0,
-            color: null
+            color: null,
+            colorIndex: 0,
+            isEdit: false
         }
 
         this.changeRed = this.changeRed.bind(this);
         this.changeBlue = this.changeBlue.bind(this);
         this.changeGreen = this.changeGreen.bind(this);
-        this.addColor = this.addColor.bind(this);
     }
 
     changeRed(event) {
         if (event.target.value > 255) event.target.value = 255;
-        this.setState({ red: event.target.value });
+        this.setState({ ...this.state, red: event.target.value });
     }
     changeGreen(event) {
         if (event.target.value > 255) event.target.value = 255;
 
-        this.setState({ green: event.target.value });
+        this.setState({ ...this.state, green: event.target.value });
     }
     changeBlue(event) {
         if (event.target.value > 255) event.target.value = 255;
 
-        this.setState({ blue: event.target.value });
+        this.setState({ ...this.state, blue: event.target.value });
     }
 
     addColor() {
@@ -38,7 +39,19 @@ class Picker extends React.Component {
             green: this.state.green,
             blue: this.state.blue
         };
-        this.setState({ color });
+        this.setState({ ...this.state, color });
+    };
+
+
+    editColor(colorData) {
+        this.setState({
+            ...this.state,
+            colorIndex: colorData.index,
+            isEdit: colorData.isEdit,
+            red: colorData.color.red,
+            green: colorData.color.green,
+            blue: colorData.color.blue
+        });
     };
 
 
@@ -65,11 +78,18 @@ class Picker extends React.Component {
                             </div>
                         </div>
                         <div className="picker__circle-bg" style={{ backgroundColor: `rgb(${this.state.red},${this.state.green},${this.state.blue})` }}>
-                            <button onClick={this.addColor}>Add -&gt;</button>
+                            <button onClick={() => this.addColor()}>  {!this.state.isEdit ? "Add" : "Edit"} Color -&gt;</button>
                         </div>
 
                     </div>
-                    <div className="col-6"><Palette addColor={this.state.color} /></div>
+                    <div className="col-6">
+                        <Palette
+                            color={this.state.color}
+                            isEdit={this.state.isEdit}
+                            colorIndex={this.state.colorIndex}
+                            onEditColor={(colorData) => this.editColor(colorData)}
+                        />
+                    </div>
                 </div>
             </div>
         );

@@ -10,14 +10,50 @@ class Palette extends React.Component {
         super(props);
         this.state = {
             colors: [],
-            palette: []
+            palette: [],
+            isLoading: false,
+            isEdit: false,
+            selectedColor: 0
         }
-
-
+        //    this.editColor = this.editColor.bind(this);
     };
 
 
     async componentDidMount() {
+        await this.getPalettes();
+    }
+
+    componentDidUpdate(prevProps) {
+
+        if (!this.props.color)
+            return;
+        else if (!prevProps.color) {
+            const colors = [this.props.color];
+            this.setState({ ...this.state, colors: colors });
+            return;
+        }
+
+        if (prevProps.color.red !== this.props.color.red ||
+            prevProps.color.blue !== this.props.color.blue ||
+            prevProps.color.green !== this.props.color.green) {
+
+            let colors = this.state.colors;
+
+            if (this.props.isEdit)
+                colors[this.state.selectedColor - 1] = this.props.color;
+            else {
+                if (colors.length > 4)
+                    colors = colors.slice(1, 5);
+
+                colors.push(this.props.color);
+            }
+
+            this.setState({ ...this.state, colors, isEdit: false });
+        }
+    }
+
+    async getPalettes() {
+        this.setState({ ...this.state, isLoading: true })
         await axios.get(`${SERVER_URL}/colors`).then(res => {
             if (res.status === 200) {
 
@@ -30,43 +66,42 @@ class Palette extends React.Component {
                         }
 
                     ));
-                this.setState({ ...this.state, palette: palette })
+                this.setState({ ...this.state, palette: palette, isLoading: false })
             }
             else {
                 throw new Error("Error connecting to server");
             }
         });
-
     }
 
-    componentDidUpdate(prevProps) {
+    async addPalette() {
+        const colors = JSON.stringify(this.state.colors);
 
-        if (!this.props.addColor)
-            return;
-        else if (!prevProps.addColor) {
-            const colors = [this.props.addColor];
-            this.setState({ ...this.state, colors: colors });
-            return;
-        }
-
-        if (prevProps.addColor.red !== this.props.addColor.red ||
-            prevProps.addColor.blue !== this.props.addColor.blue ||
-            prevProps.addColor.green !== this.props.addColor.green) {
-            let colors = this.state.colors;
-            if (colors.length > 4)
-                colors = colors.slice(1, 5);
-
-            colors.push(this.props.addColor);
-            this.setState({ ...this.state, colors });
-        }
+        axios.post('/addPalette', {
+            colors
+        })
+            .then(function (response) {
+                console.log(response);
+                this.getPalettes();
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
-
+    editColor(index) {
+        const colorIndex = index + 1;
+        const isEdit = this.state.selectedColor !== 0 && colorIndex !== this.state.selectedColor ? this.state.isEdit : !this.state.isEdit;
+        const selectedColor = isEdit ? colorIndex : 0;
+        this.setState({ ...this.state, isEdit, selectedColor });
+        const colorData = { index, isEdit, color: this.state.colors[index] };
+        this.props.onEditColor(colorData);
+    }
 
     render() {
-        const userPalette = this.state.colors.map((color, index) => (
-            <div key={index} className="col-palette">
-                <div className="color" style={{ backgroundColor: `rgb(${color.red},${color.green},${color.blue})` }}>
+        const newPalette = this.state.colors.map((color, index) => (
+            <div key={index} className={`col-palette${this.state.selectedColor === index + 1 ? ` selected` : ``}`}>
+                <div className="color" onClick={() => this.editColor(index)} style={{ backgroundColor: `rgb(${color.red},${color.green},${color.blue})` }}>
                 </div>
             </div>
 
@@ -82,16 +117,20 @@ class Palette extends React.Component {
 
         return (
             <div className="palettes">
-                <div className="row">
-                    {userPalette}
+                <h2> New palette</h2>
+                <div className="row palettes__new">
+                    {newPalette}
 
                 </div>
-                {/* <button onClick={this.addColor}>Add Palette</button> */}
+                {<button onClick={this.addPalette} disabled={newPalette.length === 5 ? false : true}>Add Palette</button>}
 
                 <h2> Saved palettes</h2>
+
                 <div className="row">
-                    {givenPalette}
+                    {this.state.isLoading ? `Loading...` :
+                        givenPalette}
                 </div>
+
             </div>
 
         );
